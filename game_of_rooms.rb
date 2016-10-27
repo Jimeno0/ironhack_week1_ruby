@@ -10,6 +10,14 @@ class Space
       east: [true, false].sample,
       south: [true, false].sample
     }
+    while @exits[:north] == false && @exits[:west] == false && @exits[:east] == false && @exits[:south] == false
+      @exits = {
+        north: [true, false].sample,
+        west: [true, false].sample,
+        east: [true, false].sample,
+        south: [true, false].sample
+      }
+    end
     @obstacle = true
     @canMove = false
   end
@@ -104,24 +112,14 @@ end
 
 class GamePlay
   attr_reader :currentPlace
-  def initialize
+  def initialize (levels)
     print_welcome_msg
-    @currentPlace = [MichaelJackson.new, BarbedWire.new, TrupRoom.new, WitchRoom.new].sample
-    puts @currentPlace.initMsg
-      
-    while @currentPlace.canMove == false
-      
-      do_something
-    end
-    
+    levels.times { create_new_scenario }
+    puts "Yeeeeeha you are free!!!!"
   end
 
   def print_welcome_msg
-    puts "Welcome to the game of rooms!!
-          You yout landed in a dark room and you just know how to:
-          - Move in the N/W/E/S directions.
-          - sing/hit/bend/dance
-          but wait a second! somethings going to happend......"
+    puts "Welcome to the game of rooms!!\nYou yout landed in a dark room and you just know how to:\n- Move in the N/W/E/S directions.\n- sing/hit/bend/dance\nbut wait a second! somethings going to happend......"
   end
 
   def do_something
@@ -136,10 +134,13 @@ class GamePlay
   
   def create_new_scenario
     @currentPlace = [MichaelJackson.new, BarbedWire.new, TrupRoom.new, WitchRoom.new].sample
+    puts @currentPlace.initMsg
+    while @currentPlace.canMove == false
+      do_something
+    end
   end
-  
 end
 
 # binding.pry
 
-GamePlay.new
+GamePlay.new(3)
