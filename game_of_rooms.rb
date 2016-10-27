@@ -1,9 +1,11 @@
 require "pry"
-# require "byebug"
+require "colorize"
 
 class Space
-  attr_reader :initMsg, :canMove
+  attr_reader :canMove
+  attr_accessor :initMsg
   def initialize
+
     @exits = {
       north: [true, false].sample,
       west: [true, false].sample,
@@ -31,6 +33,12 @@ class Space
       @canMove = true
     elsif direction == "S" && @exits[:south] == true && @obstacle == false
       @canMove = true
+    else
+      if @obstacle == true
+        puts "Cant move! You should do something first..."
+      else
+        puts "No doors there"  
+      end
     end
 
     if @canMove == true
@@ -84,7 +92,7 @@ class BarbedWire < Space
   def action (action)
     if action.downcase == "bend"
       @obstacle = false
-      puts "yeah! you gone to ground, go to the next dor!"
+      puts "yeah! you gone to ground,find the next door!"
         
     else
       puts "Nothing happend"
@@ -113,13 +121,29 @@ end
 class GamePlay
   attr_reader :currentPlace
   def initialize (levels)
+    @completed_levels = []
     print_welcome_msg
-    levels.times { create_new_scenario }
-    puts "Yeeeeeha you are free!!!!"
+
+    levels.times do 
+      create_new_scenario
+      binding.pry
+      @currentPlace.initMsg = "Nothing to do here, go back to the show!!"
+      @completed_levels.push(@currentPlace)
+      
+    end
+
+    end_game
   end
 
   def print_welcome_msg
-    puts "Welcome to the game of rooms!!\nYou yout landed in a dark room and you just know how to:\n- Move in the N/W/E/S directions.\n- sing/hit/bend/dance\nbut wait a second! somethings going to happend......"
+    puts "******************************".colorize(:red)
+    puts "Welcome to the game of rooms!!".colorize(:red)
+    puts "******************************".colorize(:red)
+    puts "You yout landed in a dark room and you just know how to:"
+    puts "* Move in the #{"N".colorize(:green)}/#{"W".colorize(:green)}/#{"E".colorize(:green)}/#{"S".colorize(:green)} directions."
+    puts "* #{"sing".colorize(:green)}/#{"hit".colorize(:green)}/#{"bend".colorize(:green)}/#{"dance".colorize(:green)}"
+    puts "- You can save anytime typing #{"SAVE".colorize(:green)} and load typing #{"LOAD my_game_name.txt".colorize(:green)}"
+    puts  "but wait a second! somethings going to happend......"
   end
 
   def do_something
@@ -139,8 +163,20 @@ class GamePlay
       do_something
     end
   end
+
+  def save_game
+    
+  end
+
+  def load_game
+    
+  end
+
+  def end_game
+    puts "Hoooooray you are free to go!!"
+  end
 end
 
-# binding.pry
+
 
 GamePlay.new(3)
